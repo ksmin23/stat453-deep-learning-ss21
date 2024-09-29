@@ -164,3 +164,7 @@ STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
 | [L19.5.2.6 BART:  Combining Bidirectional and Auto-Regressive Transformers](https://www.youtube.com/watch?v=1JBMCG8rW18) | [code](./L19) |
 | [L19.5.2.7: Closing Words -- The Recent Growth of Language Transformers](https://www.youtube.com/watch?v=OyqIuxMmLRg) | [code](./L19) |
 | [L19.6 DistilBert Movie Review Classifier in PyTorch -- Code Example](https://www.youtube.com/watch?v=emDmznRlsWw) | [code](./L19) |
+
+# Resources
+
+ * [Scientific Computing in Python: Introduction to NumPy and Matplotlib](https://sebastianraschka.com/blog/2020/numpy-intro.html)
