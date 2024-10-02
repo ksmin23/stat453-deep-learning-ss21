@@ -1,6 +1,35 @@
 # stat453-deep-learning-ss21
 STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
 
+## Table of Contents
+
+  - [Part 1: Introduction](#part-1-introduction)
+    - [L01: Introduction to deep learning](#l01-introduction-to-deep-learning)
+    - [L02: The brief history of deep learning](#l02-the-brief-history-of-deep-learning)
+    - [L03: Single-layer neural networks: The perceptron algorithm](#l03-single-layer-neural-networks-the-perceptron-algorithm)
+  - [Part 2: Mathematical and computational foundations](#part-2-mathematical-and-computational-foundations)
+    - [L04: Linear algebra and calculus for deep learning](#l04-linear-algebra-and-calculus-for-deep-learning)
+    - [L05: Parameter optimization with gradient descent](#l05-parameter-optimization-with-gradient-descent)
+    - [L06: Automatic differentiation with PyTorch](#l06-automatic-differentiation-with-pytorch)
+    - [L07: Cluster and cloud computing resources](#l07-cluster-and-cloud-computing-resources)
+  - [Part 3: Introduction to neural networks](#part-3-introduction-to-neural-networks)
+    - [L08: Multinomial logistic regression / Softmax regression](#l08-multinomial-logistic-regression--softmax-regression)
+    - [L09: Multilayer perceptrons and backpropration](#l09-multilayer-perceptrons-and-backpropration)
+    - [L10: Regularization to avoid overfitting](#l10-regularization-to-avoid-overfitting)
+    - [L11: Input normalization and weight initialization](#l11-input-normalization-and-weight-initialization)
+    - [L12: Learning rates and advanced optimization algorithms](#l12-learning-rates-and-advanced-optimization-algorithms)
+  - [Part 4: Deep learning for computer vision and language modeling](#part-4-deep-learning-for-computer-vision-and-language-modeling)
+    - [L13: Introduction to convolutional neural networks](#l13-introduction-to-convolutional-neural-networks)
+    - [L14: Convolutional neural networks architectures](#l14-convolutional-neural-networks-architectures)
+    - [L15: Introduction to recurrent neural networks](#l15-introduction-to-recurrent-neural-networks)
+  - [Part 5: Deep generative models](#part-5-deep-generative-models)
+    - [L16: Autoencoders](#l16-autoencoders)
+    - [L17: Variational autoencoders](#l17-variational-autoencoders)
+    - [L18: Introduction to generative adversarial networks](#l18-introduction-to-generative-adversarial-networks)
+    - [L19: Self-attention and transformer networks](#l19-self-attention-and-transformer-networks)
+  - [Supplementary Resources](#supplementary-resources)
+
+
 ## Part 1: Introduction
 ### L01: Introduction to deep learning
 
@@ -100,7 +129,7 @@ STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
 | [L8.8 Softmax Regression Derivatives for Gradient Descent](https://www.youtube.com/watch?v=aeM-fmcdkXU) ||
 | [L8.9 Softmax Regression -- Code Example Using PyTorch](https://www.youtube.com/watch?v=mM6apVBXGEA) | [code](./L08) |
 
-### Multilayer perceptrons and backpropration
+### L09: Multilayer perceptrons and backpropration
 
 | Videos | Material |
 |--------|----------|
