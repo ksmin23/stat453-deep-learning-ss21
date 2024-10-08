@@ -3,6 +3,8 @@ STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
 
 ## Table of Contents
 
+- [stat453-deep-learning-ss21](#stat453-deep-learning-ss21)
+  - [Table of Contents](#table-of-contents)
   - [Part 1: Introduction](#part-1-introduction)
     - [L01: Introduction to deep learning](#l01-introduction-to-deep-learning)
     - [L02: The brief history of deep learning](#l02-the-brief-history-of-deep-learning)
@@ -296,3 +298,4 @@ STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
  * [(Blog) Introduction to Deep Learning (2021-07-09)](https://sebastianraschka.com/blog/2021/dl-course.html)
  * [(Blog) Scientific Computing in Python: Introduction to NumPy and Matplotlib](https://sebastianraschka.com/blog/2020/numpy-intro.html)
  * [(GitHub) Udacity's Deep Learning (PyTorch) - ND101 v7](https://github.com/ksmin23/deep-learning-v2-pytorch)
+ * [(GitHub) PyTorch Seq2Seq](https://github.com/bentrevett/pytorch-seq2seq)
