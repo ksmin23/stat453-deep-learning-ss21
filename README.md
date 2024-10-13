@@ -231,7 +231,7 @@ STAT 453: Intro to Deep Learning @ UW-Madison (Spring 2021)
 | [L15.3 Different Types of Sequence Modeling Tasks](https://www.youtube.com/watch?v=Ed8GTvkzkZE) ||
 | [L15.4 Backpropagation Through Time Overview](https://www.youtube.com/watch?v=0XdPIqi0qpg) ||
 | [L15.5 Long Short-Term Memory](https://www.youtube.com/watch?v=k6fSgUaWUF8) ||
-| [L15.6 RNNs for Classification: A Many-to-One Word RNN](https://www.youtube.com/watch?v=TI4HRR3Hd9A) ||
+| [L15.6 RNNs for Classification: A Many-to-One Word RNN](https://www.youtube.com/watch?v=TI4HRR3Hd9A) | [resource](https://github.com/bentrevett/pytorch-sentiment-analysis) |
 | [L15.7 An RNN Sentiment Classifier in PyTorch](https://www.youtube.com/watch?v=KgrdifrlDxg) | [code](./L15) |
 
 ## Part 5: Deep generative models
