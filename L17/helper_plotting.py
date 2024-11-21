@@ -49,13 +49,13 @@ def plot_training_loss(minibatch_losses, num_epochs, averaging_iterations=100, c
     ###################
 
     plt.tight_layout()
-    
-    
+
+
 def plot_accuracy(train_acc, valid_acc):
 
     num_epochs = len(train_acc)
 
-    plt.plot(np.arange(1, num_epochs+1), 
+    plt.plot(np.arange(1, num_epochs+1),
              train_acc, label='Training')
     plt.plot(np.arange(1, num_epochs+1),
              valid_acc, label='Validation')
@@ -65,23 +65,23 @@ def plot_accuracy(train_acc, valid_acc):
     plt.legend()
 
     plt.tight_layout()
-    
-    
-def plot_generated_images(data_loader, model, device, 
+
+
+def plot_generated_images(data_loader, model, device,
                           unnormalizer=None,
                           figsize=(20, 2.5), n_images=15, modeltype='autoencoder'):
 
-    fig, axes = plt.subplots(nrows=2, ncols=n_images, 
+    fig, axes = plt.subplots(nrows=2, ncols=n_images,
                              sharex=True, sharey=True, figsize=figsize)
-    
+
     for batch_idx, (features, _) in enumerate(data_loader):
-        
+
         features = features.to(device)
 
         color_channels = features.shape[1]
         image_height = features.shape[2]
         image_width = features.shape[3]
-        
+
         with torch.no_grad():
             if modeltype == 'autoencoder':
                 decoded_images = model(features)[:n_images]
@@ -95,7 +95,7 @@ def plot_generated_images(data_loader, model, device,
 
     for i in range(n_images):
         for ax, img in zip(axes, [orig_images, decoded_images]):
-            curr_img = img[i].detach().to(torch.device('cpu'))        
+            curr_img = img[i].detach().to(torch.device('cpu'))
             if unnormalizer is not None:
                 curr_img = unnormalizer(curr_img)
 
@@ -104,17 +104,17 @@ def plot_generated_images(data_loader, model, device,
                 ax[i].imshow(curr_img)
             else:
                 ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
-                
-                
+
+
 def plot_latent_space_with_labels(num_classes, data_loader, encoding_fn, device):
     d = {i:[] for i in range(num_classes)}
 
-    with torch.no_grad():
+    with torch.inference_mode():
         for i, (features, targets) in enumerate(data_loader):
 
             features = features.to(device)
             targets = targets.to(device)
-            
+
             embedding = encoding_fn(features)
 
             for i in range(num_classes):
@@ -132,15 +132,15 @@ def plot_latent_space_with_labels(num_classes, data_loader, encoding_fn, device)
             alpha=0.5)
 
     plt.legend()
-    
-    
+
+
 def plot_images_sampled_from_vae(model, device, latent_size, unnormalizer=None, num_images=10):
 
-    with torch.no_grad():
+    with torch.inference_mode():
 
         ##########################
         ### RANDOM SAMPLE
-        ##########################    
+        ##########################
 
         rand_features = torch.randn(num_images, latent_size).to(device)
         new_images = model.decoder(rand_features)
@@ -158,7 +158,7 @@ def plot_images_sampled_from_vae(model, device, latent_size, unnormalizer=None, 
         decoded_images = new_images[:num_images]
 
         for ax, img in zip(axes, decoded_images):
-            curr_img = img.detach().to(torch.device('cpu'))        
+            curr_img = img.detach().to(torch.device('cpu'))
             if unnormalizer is not None:
                 curr_img = unnormalizer(curr_img)
 
@@ -166,24 +166,24 @@ def plot_images_sampled_from_vae(model, device, latent_size, unnormalizer=None, 
                 curr_img = np.transpose(curr_img, (1, 2, 0))
                 ax.imshow(curr_img)
             else:
-                ax.imshow(curr_img.view((image_height, image_width)), cmap='binary') 
-                
-                
+                ax.imshow(curr_img.view((image_height, image_width)), cmap='binary')
+
+
 def plot_modified_faces(original, diff,
                         diff_coefficients=(0., 0.5, 1., 1.5, 2., 2.5, 3.),
                         decoding_fn=None,
                         device=None,
                         figsize=(8, 2.5)):
 
-    fig, axes = plt.subplots(nrows=2, ncols=len(diff_coefficients), 
+    fig, axes = plt.subplots(nrows=2, ncols=len(diff_coefficients),
                              sharex=True, sharey=True, figsize=figsize)
-    
+
 
     for i, alpha in enumerate(diff_coefficients):
         more = original + alpha*diff
         less = original - alpha*diff
-        
-        
+
+
         if decoding_fn is not None:
             ######################################
             ### Latent -> Original space
@@ -195,19 +195,19 @@ def plot_modified_faces(original, diff,
 
                 more = decoding_fn(more).to('cpu').squeeze(0)
                 less = decoding_fn(less).to('cpu').squeeze(0)
-            ###################################### 
-        
+            ######################################
+
         if not alpha:
             s = 'original'
         else:
             s = f'$\\alpha=${alpha}'
-            
+
         axes[0][i].set_title(s)
         axes[0][i].imshow(more.permute(1, 2, 0))
         axes[1][i].imshow(less.permute(1, 2, 0))
         axes[1][i].axison = False
         axes[0][i].axison = False
-        
+
 
 
 
