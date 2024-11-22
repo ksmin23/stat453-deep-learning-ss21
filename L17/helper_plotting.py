@@ -82,7 +82,7 @@ def plot_generated_images(data_loader, model, device,
         image_height = features.shape[2]
         image_width = features.shape[3]
 
-        with torch.no_grad():
+        with torch.inference_mode():
             if modeltype == 'autoencoder':
                 decoded_images = model(features)[:n_images]
             elif modeltype == 'VAE':
