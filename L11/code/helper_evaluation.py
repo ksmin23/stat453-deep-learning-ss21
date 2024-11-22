@@ -27,7 +27,7 @@ def set_deterministic():
 
 def compute_accuracy(model, data_loader, device):
 
-    with torch.no_grad():
+    with torch.inference_mode():
 
         correct_pred, num_examples = 0, 0
 

@@ -28,7 +28,7 @@ def set_deterministic():
 
 def compute_accuracy(model, data_loader, device):
 
-    with torch.no_grad():
+    with torch.inference_mode():
 
         correct_pred, num_examples = 0, 0
 
@@ -48,7 +48,7 @@ def compute_accuracy(model, data_loader, device):
 def compute_confusion_matrix(model, data_loader, device):
 
     all_targets, all_predictions = [], []
-    with torch.no_grad():
+    with torch.inference_mode():
 
         for i, (features, targets) in enumerate(data_loader):
 
@@ -62,7 +62,7 @@ def compute_confusion_matrix(model, data_loader, device):
     all_predictions = all_predictions
     all_predictions = np.array(all_predictions)
     all_targets = np.array(all_targets)
-        
+
     class_labels = np.unique(np.concatenate((all_targets, all_predictions)))
     if class_labels.shape[0] == 1:
         if class_labels[0] != 0:

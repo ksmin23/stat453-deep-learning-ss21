@@ -110,7 +110,7 @@ for epoch in range(SETTINGS['num epochs']):
                   f'| Loss: {loss:.4f}')
 
     model.eval()
-    with torch.no_grad():  # save memory during inference
+    with torch.inference_mode():  # save memory during inference
         train_acc = compute_accuracy(model, train_loader, device=device)
         valid_acc = compute_accuracy(model, valid_loader, device=device)
         print(f'Epoch: {epoch+1:03d}/{SETTINGS["num epochs"]:03d} '

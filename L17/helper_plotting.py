@@ -187,7 +187,7 @@ def plot_modified_faces(original, diff,
         if decoding_fn is not None:
             ######################################
             ### Latent -> Original space
-            with torch.no_grad():
+            with torch.inference_mode():
 
                 if device is not None:
                     more = more.to(device).unsqueeze(0)

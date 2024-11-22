@@ -170,7 +170,7 @@ def get_dataloaders_mnist(batch_size, num_workers=0,
 
 def compute_accuracy(model, data_loader, device):
 
-    with torch.no_grad():
+    with torch.inference_mode():
 
         correct_pred, num_examples = 0, 0
 

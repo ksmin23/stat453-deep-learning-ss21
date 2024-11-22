@@ -137,9 +137,9 @@ def train_autoencoder_v1(num_epochs, model, optimizer, device,
     return log_dict
 
 
-def train_vae_v1(num_epochs, model, optimizer, device, 
+def train_vae_v1(num_epochs, model, optimizer, device,
                  train_loader, loss_fn=None,
-                 logging_interval=100, 
+                 logging_interval=100,
                  skip_epoch_stats=False,
                  reconstruction_term_weight=1,
                  save_model=None):
@@ -166,20 +166,20 @@ def train_vae_v1(num_epochs, model, optimizer, device,
             # total loss = reconstruction loss + KL divergence
             # kl_divergence = (0.5 * (z_mean**2 +
             #                         torch.exp(z_log_var) - z_log_var - 1)).sum()
-            kl_div = -0.5 * torch.sum(1 + z_log_var 
-                                      - z_mean**2 
-                                      - torch.exp(z_log_var), 
+            kl_div = -0.5 * torch.sum(1 + z_log_var
+                                      - z_mean**2
+                                      - torch.exp(z_log_var),
                                       axis=1) # sum over latent dimension
 
             batchsize = kl_div.size(0)
             kl_div = kl_div.mean() # average over batch dimension
-    
+
             pixelwise = loss_fn(decoded, features, reduction='none')
             pixelwise = pixelwise.view(batchsize, -1).sum(axis=1) # sum over pixels
             pixelwise = pixelwise.mean() # average over batch dimension
-            
+
             loss = reconstruction_term_weight*pixelwise + kl_div
-            
+
             optimizer.zero_grad()
 
             loss.backward()
@@ -191,7 +191,7 @@ def train_vae_v1(num_epochs, model, optimizer, device,
             log_dict['train_combined_loss_per_batch'].append(loss.item())
             log_dict['train_reconstruction_loss_per_batch'].append(pixelwise.item())
             log_dict['train_kl_loss_per_batch'].append(kl_div.item())
-            
+
             if not batch_idx % logging_interval:
                 print('Epoch: %03d/%03d | Batch %04d/%04d | Loss: %.4f'
                       % (epoch+1, num_epochs, batch_idx,
@@ -199,9 +199,9 @@ def train_vae_v1(num_epochs, model, optimizer, device,
 
         if not skip_epoch_stats:
             model.eval()
-            
+
             with torch.set_grad_enabled(False):  # save memory during inference
-                
+
                 train_loss = compute_epoch_loss_autoencoder(
                     model, train_loader, loss_fn, device)
                 print('***Epoch: %03d/%03d | Loss: %.3f' % (
@@ -209,19 +209,19 @@ def train_vae_v1(num_epochs, model, optimizer, device,
                 log_dict['train_combined_per_epoch'].append(train_loss.item())
 
         print('Time elapsed: %.2f min' % ((time.time() - start_time)/60))
-    
+
     print('Total Training Time: %.2f min' % ((time.time() - start_time)/60))
     if save_model is not None:
         torch.save(model.state_dict(), save_model)
-    
+
     return log_dict
 
 
-def train_gan_v1(num_epochs, model, optimizer_gen, optimizer_discr, 
+def train_gan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
                  latent_dim, device, train_loader, loss_fn=None,
-                 logging_interval=100, 
+                 logging_interval=100,
                  save_model=None):
-    
+
     log_dict = {'train_generator_loss_per_batch': [],
                 'train_discriminator_loss_per_batch': [],
                 'train_discriminator_real_acc_per_batch': [],
@@ -291,44 +291,44 @@ def train_gan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
 
             # --------------------------
             # Logging
-            # --------------------------   
+            # --------------------------
             log_dict['train_generator_loss_per_batch'].append(gener_loss.item())
             log_dict['train_discriminator_loss_per_batch'].append(discr_loss.item())
-            
+
             predicted_labels_real = torch.where(discr_pred_real.detach() > 0., 1., 0.)
             predicted_labels_fake = torch.where(discr_pred_fake.detach() > 0., 1., 0.)
             acc_real = (predicted_labels_real == real_labels).float().mean()*100.
             acc_fake = (predicted_labels_fake == fake_labels).float().mean()*100.
             log_dict['train_discriminator_real_acc_per_batch'].append(acc_real.item())
-            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())         
-            
+            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())
+
             if not batch_idx % logging_interval:
-                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f' 
-                       % (epoch+1, num_epochs, batch_idx, 
+                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f'
+                       % (epoch+1, num_epochs, batch_idx,
                           len(train_loader), gener_loss.item(), discr_loss.item()))
 
         ### Save images for evaluation
-        with torch.no_grad():
+        with torch.inference_mode():
             fake_images = model.generator_forward(fixed_noise).detach().cpu()
             log_dict['images_from_noise_per_epoch'].append(
                 torchvision.utils.make_grid(fake_images, padding=2, normalize=True))
 
 
         print('Time elapsed: %.2f min' % ((time.time() - start_time)/60))
-    
+
     print('Total Training Time: %.2f min' % ((time.time() - start_time)/60))
-    
+
     if save_model is not None:
         torch.save(model.state_dict(), save_model)
-    
+
     return log_dict
 
 
-def train_gan_v2(num_epochs, model, optimizer_gen, optimizer_discr, 
+def train_gan_v2(num_epochs, model, optimizer_gen, optimizer_discr,
                  latent_dim, device, train_loader, loss='regular',
-                 logging_interval=100, 
+                 logging_interval=100,
                  save_model=None):
-    
+
     log_dict = {'train_generator_loss_per_batch': [],
                 'train_discriminator_loss_per_batch': [],
                 'train_discriminator_real_acc_per_batch': [],
@@ -363,11 +363,11 @@ def train_gan_v2(num_epochs, model, optimizer_gen, optimizer_discr,
             # generated (fake) images
             noise = torch.randn(batch_size, latent_dim, 1, 1, device=device)  # format NCHW
             fake_images = model.generator_forward(noise)
-            
+
             if loss == 'regular':
                 fake_labels = torch.zeros(batch_size, device=device) # fake label = 0
             elif loss == 'wasserstein':
-                fake_labels = -real_labels # fake label = -1    
+                fake_labels = -real_labels # fake label = -1
             flipped_fake_labels = real_labels # here, fake label = 1
 
             # --------------------------
@@ -391,7 +391,7 @@ def train_gan_v2(num_epochs, model, optimizer_gen, optimizer_discr,
             discr_loss.backward()
 
             optimizer_discr.step()
-            
+
             if loss == 'wasserstein':
                 for p in model.discriminator.parameters():
                     p.data.clamp_(-0.01, 0.01)
@@ -411,47 +411,47 @@ def train_gan_v2(num_epochs, model, optimizer_gen, optimizer_discr,
 
             # --------------------------
             # Logging
-            # --------------------------   
+            # --------------------------
             log_dict['train_generator_loss_per_batch'].append(gener_loss.item())
             log_dict['train_discriminator_loss_per_batch'].append(discr_loss.item())
-            
+
             predicted_labels_real = torch.where(discr_pred_real.detach() > 0., 1., 0.)
             predicted_labels_fake = torch.where(discr_pred_fake.detach() > 0., 1., 0.)
             acc_real = (predicted_labels_real == real_labels).float().mean()*100.
             acc_fake = (predicted_labels_fake == fake_labels).float().mean()*100.
             log_dict['train_discriminator_real_acc_per_batch'].append(acc_real.item())
-            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())         
-            
+            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())
+
             if not batch_idx % logging_interval:
-                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f' 
-                       % (epoch+1, num_epochs, batch_idx, 
+                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f'
+                       % (epoch+1, num_epochs, batch_idx,
                           len(train_loader), gener_loss.item(), discr_loss.item()))
 
         ### Save images for evaluation
-        with torch.no_grad():
+        with torch.inference_mode():
             fake_images = model.generator_forward(fixed_noise).detach().cpu()
             log_dict['images_from_noise_per_epoch'].append(
                 torchvision.utils.make_grid(fake_images, padding=2, normalize=True))
 
 
         print('Time elapsed: %.2f min' % ((time.time() - start_time)/60))
-    
+
     print('Total Training Time: %.2f min' % ((time.time() - start_time)/60))
-    
+
     if save_model is not None:
         torch.save(model.state_dict(), save_model)
-    
+
     return log_dict
 
 
-def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr, 
+def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
                   latent_dim, device, train_loader,
                   discr_iter_per_generator_iter=5,
-                  logging_interval=100, 
+                  logging_interval=100,
                   gradient_penalty=False,
                   gradient_penalty_weight=10,
                   save_model=None):
-    
+
     log_dict = {'train_generator_loss_per_batch': [],
                 'train_discriminator_loss_per_batch': [],
                 'train_discriminator_real_acc_per_batch': [],
@@ -470,13 +470,13 @@ def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
     fixed_noise = torch.randn(64, latent_dim, 1, 1, device=device) # format NCHW
 
     start_time = time.time()
-    
-    
+
+
     skip_generator = 1
     for epoch in range(num_epochs):
 
         model.train()
-        
+
         for batch_idx, (features, _) in enumerate(train_loader):
 
             batch_size = features.size(0)
@@ -488,11 +488,11 @@ def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
             # generated (fake) images
             noise = torch.randn(batch_size, latent_dim, 1, 1, device=device)  # format NCHW
             fake_images = model.generator_forward(noise)
-            
-            fake_labels = -real_labels # fake label = -1    
+
+            fake_labels = -real_labels # fake label = -1
             flipped_fake_labels = real_labels # here, fake label = 1
 
-    
+
             # --------------------------
             # Train Discriminator
             # --------------------------
@@ -508,7 +508,7 @@ def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
             discr_pred_fake = model.discriminator_forward(fake_images.detach()).view(-1)
             fake_loss = loss_fn(discr_pred_fake, fake_labels)
             # fake_loss.backward()
-            
+
             # combined loss
             discr_loss = 0.5*(real_loss + fake_loss)
 
@@ -540,22 +540,22 @@ def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
 
                 gp_penalty_term = ((gradients_norm - 1) ** 2).mean() * gradient_penalty_weight
                 discr_loss += gp_penalty_term
-                
+
                 log_dict['train_gradient_penalty_loss_per_batch'].append(gp_penalty_term.item())
             #######################################################
-            
+
             discr_loss.backward()
 
             optimizer_discr.step()
-            
+
             # Use weight clipping (standard Wasserstein GAN)
             if not gradient_penalty:
                 for p in model.discriminator.parameters():
                     p.data.clamp_(-0.01, 0.01)
 
-            
+
             if skip_generator <= discr_iter_per_generator_iter:
-                
+
                 # --------------------------
                 # Train Generator
                 # --------------------------
@@ -568,43 +568,43 @@ def train_wgan_v1(num_epochs, model, optimizer_gen, optimizer_discr,
                 gener_loss.backward()
 
                 optimizer_gen.step()
-                
+
                 skip_generator += 1
-                
+
             else:
                 skip_generator = 1
                 gener_loss = torch.tensor(0.)
 
             # --------------------------
             # Logging
-            # --------------------------   
+            # --------------------------
             log_dict['train_generator_loss_per_batch'].append(gener_loss.item())
             log_dict['train_discriminator_loss_per_batch'].append(discr_loss.item())
-            
+
             predicted_labels_real = torch.where(discr_pred_real.detach() > 0., 1., 0.)
             predicted_labels_fake = torch.where(discr_pred_fake.detach() > 0., 1., 0.)
             acc_real = (predicted_labels_real == real_labels).float().mean()*100.
             acc_fake = (predicted_labels_fake == fake_labels).float().mean()*100.
             log_dict['train_discriminator_real_acc_per_batch'].append(acc_real.item())
-            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())         
-            
+            log_dict['train_discriminator_fake_acc_per_batch'].append(acc_fake.item())
+
             if not batch_idx % logging_interval:
-                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f' 
-                       % (epoch+1, num_epochs, batch_idx, 
+                print('Epoch: %03d/%03d | Batch %03d/%03d | Gen/Dis Loss: %.4f/%.4f'
+                       % (epoch+1, num_epochs, batch_idx,
                           len(train_loader), gener_loss.item(), discr_loss.item()))
 
         ### Save images for evaluation
-        with torch.no_grad():
+        with torch.inference_mode():
             fake_images = model.generator_forward(fixed_noise).detach().cpu()
             log_dict['images_from_noise_per_epoch'].append(
                 torchvision.utils.make_grid(fake_images, padding=2, normalize=True))
 
 
         print('Time elapsed: %.2f min' % ((time.time() - start_time)/60))
-    
+
     print('Total Training Time: %.2f min' % ((time.time() - start_time)/60))
-    
+
     if save_model is not None:
         torch.save(model.state_dict(), save_model)
-    
+
     return log_dict

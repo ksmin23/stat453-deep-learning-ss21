@@ -72,11 +72,11 @@ def plot_accuracy(train_acc_list, valid_acc_list, results_dir):
 
 
 def show_examples(model, data_loader, unnormalizer=None, class_dict=None):
-    
-        
+
+
     for batch_idx, (features, targets) in enumerate(data_loader):
 
-        with torch.no_grad():
+        with torch.inference_mode():
             features = features
             targets = targets
             logits = model(features)
@@ -85,12 +85,12 @@ def show_examples(model, data_loader, unnormalizer=None, class_dict=None):
 
     fig, axes = plt.subplots(nrows=3, ncols=5,
                              sharex=True, sharey=True)
-    
+
     if unnormalizer is not None:
         for idx in range(features.shape[0]):
             features[idx] = unnormalizer(features[idx])
     nhwc_img = np.transpose(features, axes=(0, 2, 3, 1))
-    
+
     if nhwc_img.shape[-1] == 1:
         nhw_img = np.squeeze(nhwc_img.numpy(), axis=3)
 
@@ -168,12 +168,12 @@ def plot_confusion_matrix(conf_mat,
                     va='center',
                     ha='center',
                     color="white" if normed_conf_mat[i, j] > 0.5 else "black")
-    
+
     if class_names is not None:
         tick_marks = np.arange(len(class_names))
         plt.xticks(tick_marks, class_names, rotation=90)
         plt.yticks(tick_marks, class_names)
-        
+
     if hide_spines:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)

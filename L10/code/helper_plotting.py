@@ -75,7 +75,7 @@ def show_examples(model, data_loader):
 
     for batch_idx, (features, targets) in enumerate(data_loader):
 
-        with torch.no_grad():
+        with torch.inference_mode():
             features = features
             targets = targets
             logits = model(features)

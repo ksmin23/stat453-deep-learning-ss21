@@ -11,7 +11,7 @@ def train_model(model, num_epochs, train_loader,
 
     start_time = time.time()
     minibatch_loss_list, train_acc_list, valid_acc_list = [], [], []
-    
+
     for epoch in range(num_epochs):
 
         model.train()
@@ -38,7 +38,7 @@ def train_model(model, num_epochs, train_loader,
                       f'| Loss: {loss:.4f}')
 
         model.eval()
-        with torch.no_grad():  # save memory during inference
+        with torch.inference_mode():  # save memory during inference
             train_acc = compute_accuracy(model, train_loader, device=device)
             valid_acc = compute_accuracy(model, valid_loader, device=device)
             print(f'Epoch: {epoch+1:03d}/{num_epochs:03d} '
@@ -49,7 +49,7 @@ def train_model(model, num_epochs, train_loader,
 
         elapsed = (time.time() - start_time)/60
         print(f'Time elapsed: {elapsed:.2f} min')
-        
+
         if scheduler is not None:
 
             if scheduler_on == 'valid_acc':
@@ -58,7 +58,7 @@ def train_model(model, num_epochs, train_loader,
                 scheduler.step(minibatch_loss_list[-1])
             else:
                 raise ValueError(f'Invalid `scheduler_on` choice.')
-        
+
 
     elapsed = (time.time() - start_time)/60
     print(f'Total Training Time: {elapsed:.2f} min')

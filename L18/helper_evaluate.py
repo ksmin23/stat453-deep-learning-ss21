@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 def compute_accuracy(model, data_loader, device):
     model.eval()
-    with torch.no_grad():
+    with torch.inference_mode():
         correct_pred, num_examples = 0, 0
         for i, (features, targets) in enumerate(data_loader):
 
@@ -21,7 +21,7 @@ def compute_accuracy(model, data_loader, device):
 def compute_epoch_loss_classifier(model, data_loader, loss_fn, device):
     model.eval()
     curr_loss, num_examples = 0., 0
-    with torch.no_grad():
+    with torch.inference_mode():
         for features, targets in data_loader:
             features = features.to(device)
             targets = targets.to(device)
@@ -32,12 +32,12 @@ def compute_epoch_loss_classifier(model, data_loader, loss_fn, device):
 
         curr_loss = curr_loss / num_examples
         return curr_loss
-    
+
 
 def compute_epoch_loss_autoencoder(model, data_loader, loss_fn, device):
     model.eval()
     curr_loss, num_examples = 0., 0
-    with torch.no_grad():
+    with torch.inference_mode():
         for features, _ in data_loader:
             features = features.to(device)
             logits = model(features)
